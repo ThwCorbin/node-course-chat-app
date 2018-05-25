@@ -6,6 +6,8 @@ const http = require("http");
 const express = require("express");
 const socketIO = require("socket.io");
 
+const { generateMessage } = require("./utils/message.js");
+
 const publicPath = path.join(__dirname, "../public");
 const port = process.env.PORT || 3000;
 const app = express();
@@ -20,38 +22,26 @@ io.on("connection", socket => {
   // not all the users connected to the server
   console.log("New user connected");
 
-  socket.emit("newMessage", {
-    from: "Admin",
-    text: "Welcome to the chat app!",
-    createdAt: new Date().getTime()
-  });
+  socket.emit(
+    "newMessage",
+    generateMessage("Admin", "Welcome to the chat app!")
+  );
 
-  socket.broadcast.emit("newMessage", {
-    from: "Admin",
-    text: "New user joined chat.",
-    createdAt: new Date().getTime()
-  });
+  // broadcast emits event to every connection Except emitter
+  socket.broadcast.emit(
+    "newMessage",
+    generateMessage("Admin", "New user joined chat.")
+  );
 
   // Custom events
-  // After a user/connection emits (from the console in this example)...
+  // After client emits (from the console in this example)...
   // socket.emit("createMessage", {from: "Tom", text: "I am the Walrus"});
   // ...to the server, the server then emits the message plus
   // a createdAt timestamp to all connections in realtime!!!
   socket.on("createMessage", message => {
     console.log("createMessage", message);
 
-    io.emit("newMessage", {
-      from: message.from,
-      text: message.text,
-      createdAt: new Date().getTime()
-    });
-
-    // broadcast emits event to every connection Except emitter
-    // socket.broadcast.emit("newMessage", {
-    //   from: message.from,
-    //   text: message.text,
-    //   createdAt: new Date().getTime()
-    // });
+    io.emit("newMessage", generateMessage(message.from, message.text));
   });
 
   // Built-in event
