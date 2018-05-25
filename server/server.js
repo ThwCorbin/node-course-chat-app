@@ -20,16 +20,14 @@ io.on("connection", socket => {
   // not all the users connected to the server
   console.log("New user connected");
 
-  // Custom event
-  socket.emit("newMessage", {
-    from: "Mike",
-    text: "Hey, what's up?",
-    createdAt: 1400
-  });
-
-  // Custom event
+  // Custom events
   socket.on("createMessage", message => {
     console.log("createMessage", message);
+    io.emit("newMessage", {
+      from: message.from,
+      text: message.text,
+      createdAt: new Date().getTime()
+    });
   });
 
   // Built-in event
