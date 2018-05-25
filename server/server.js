@@ -14,12 +14,25 @@ const io = socketIO(server);
 
 app.use(express.static(publicPath));
 
-// Register an event listener with built-in event "connection"
-// The "socket" argument represents the individual socket...
-// not all the users connected to the server
+// Register an event listener with built-in or custom events
 io.on("connection", socket => {
+  // The "socket" argument represents the individual socket...
+  // not all the users connected to the server
   console.log("New user connected");
 
+  // Custom event
+  socket.emit("newMessage", {
+    from: "Mike",
+    text: "Hey, what's up?",
+    createdAt: 1400
+  });
+
+  // Custom event
+  socket.on("createMessage", message => {
+    console.log("createMessage", message);
+  });
+
+  // Built-in event
   socket.on("disconnect", () => {
     console.log("User was disconnected");
   });
