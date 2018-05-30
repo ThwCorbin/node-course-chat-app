@@ -38,10 +38,11 @@ io.on("connection", socket => {
   // socket.emit("createMessage", {from: "Tom", text: "I am the Walrus"});
   // ...to the server, the server then emits the message plus
   // a createdAt timestamp to all connections in realtime!!!
-  socket.on("createMessage", message => {
+  socket.on("createMessage", (message, callback) => {
     console.log("createMessage", message);
 
     io.emit("newMessage", generateMessage(message.from, message.text));
+    callback("This is the server.");
   });
 
   // Built-in event
