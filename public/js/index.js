@@ -16,6 +16,11 @@ socket.on("newMessage", function(message) {
   messages.innerHTML += `<li>${message.from}: ${message.text}</li>`;
 });
 
+socket.on("newLocationMessage", function(message) {
+  let messages = document.getElementById("messages");
+  messages.innerHTML += `<li>${message.from}: <a target="_blank" href="${message.url}">My current location</a></li>`;
+});
+
 let formInput = document.querySelector("#message");
 document.querySelector("#message-form").addEventListener("submit", sendMessage);
 
