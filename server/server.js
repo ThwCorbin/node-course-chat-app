@@ -42,7 +42,14 @@ io.on("connection", socket => {
     console.log("createMessage", message);
 
     io.emit("newMessage", generateMessage(message.from, message.text));
-    callback("This is the server.");
+    callback("This is from the server.");
+  });
+
+  socket.on("createLocationMessage", coords => {
+    io.emit(
+      "newMessage",
+      generateMessage("Admin", `${coords.latitude}, ${coords.longitude}`)
+    );
   });
 
   // Built-in event
