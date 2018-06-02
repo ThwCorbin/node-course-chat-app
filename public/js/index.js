@@ -34,7 +34,11 @@ function sendMessage(e) {
       from: "User",
       text: messageText
     },
-    function() {}
+    function() {
+      console.log("What not working?");
+      formInput.value = "";
+      // formInput.reset();
+    }
   );
 }
 
