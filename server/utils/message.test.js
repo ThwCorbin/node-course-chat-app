@@ -20,8 +20,8 @@ describe("generateLocationMessage", () => {
     let lng = 20;
     let url = `https://www.google.com/maps?q=15,20`;
     let res = generateLocationMessage(from, lat, lng);
-    
+
     expect(typeof res.createdAt).toBe("number");
-    expect(res).toMatchObject({ from, url});
+    expect(res).toMatchObject({ from, url });
   });
 });

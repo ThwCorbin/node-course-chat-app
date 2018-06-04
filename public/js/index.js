@@ -11,14 +11,15 @@ socket.on("disconnect", function() {
 });
 
 socket.on("newMessage", function(message) {
-  console.log("newMessage", message);
+  let formattedTime = moment(message.createdAt).format("h:mm a");
   let messages = document.getElementById("messages");
-  messages.innerHTML += `<li>${message.from}: ${message.text}</li>`;
+  messages.innerHTML += `<li>${message.from} ${formattedTime}: ${message.text}</li>`;
 });
 
 socket.on("newLocationMessage", function(message) {
+  let formattedTime = moment(message.createdAt).format("h:mm a");
   let messages = document.getElementById("messages");
-  messages.innerHTML += `<li>${message.from}: <a target="_blank" href="${
+  messages.innerHTML += `<li>${message.from} ${formattedTime}: <a target="_blank" href="${
     message.url
   }">My current location</a></li>`;
 });
@@ -57,7 +58,7 @@ locationButton.addEventListener("click", function() {
     function(position) {
       locationButton.disabled = false;
       locationButton.textContent = "Send location";
-      
+
       socket.emit("createLocationMessage", {
         latitude: position.coords.latitude,
         longitude: position.coords.longitude
