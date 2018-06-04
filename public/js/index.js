@@ -18,7 +18,9 @@ socket.on("newMessage", function(message) {
 
 socket.on("newLocationMessage", function(message) {
   let messages = document.getElementById("messages");
-  messages.innerHTML += `<li>${message.from}: <a target="_blank" href="${message.url}">My current location</a></li>`;
+  messages.innerHTML += `<li>${message.from}: <a target="_blank" href="${
+    message.url
+  }">My current location</a></li>`;
 });
 
 let formInput = document.querySelector("#message");
@@ -37,7 +39,6 @@ function sendMessage(e) {
     function() {
       console.log("What not working?");
       formInput.value = "";
-      // formInput.reset();
     }
   );
 }
@@ -48,14 +49,23 @@ locationButton.addEventListener("click", function() {
   if (!navigator.geolocation) {
     return alert("Geolocation not supported by your browser.");
   }
+
+  locationButton.disabled = true;
+  locationButton.textContent = "Sending...";
+
   navigator.geolocation.getCurrentPosition(
     function(position) {
+      locationButton.disabled = false;
+      locationButton.textContent = "Send location";
+      
       socket.emit("createLocationMessage", {
         latitude: position.coords.latitude,
         longitude: position.coords.longitude
       });
     },
     function() {
+      locationButton.disabled = false;
+      locationButton.textContent = "Send location";
       alert("Unable to fetch location.");
     }
   );
