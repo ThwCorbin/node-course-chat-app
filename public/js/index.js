@@ -12,16 +12,32 @@ socket.on("disconnect", function() {
 
 socket.on("newMessage", function(message) {
   let formattedTime = moment(message.createdAt).format("h:mm a");
+  let template = document.querySelector("#message-template").textContent;
+  let html = Mustache.render(template, {
+    from: message.from,
+    createdAt: formattedTime,
+    text: message.text
+  });
   let messages = document.getElementById("messages");
-  messages.innerHTML += `<li>${message.from} ${formattedTime}: ${message.text}</li>`;
+  messages.innerHTML += html;
+  // Above line replaces this by using templates
+  // messages.innerHTML += `<li>${message.from} ${formattedTime}: ${message.text}</li>`;
 });
 
 socket.on("newLocationMessage", function(message) {
   let formattedTime = moment(message.createdAt).format("h:mm a");
+  let template = document.querySelector("#location-message-template")
+    .textContent;
+  let html = Mustache.render(template, {
+    from: message.from,
+    createdAt: formattedTime,
+    url: message.url
+  });
   let messages = document.getElementById("messages");
-  messages.innerHTML += `<li>${message.from} ${formattedTime}: <a target="_blank" href="${
-    message.url
-  }">My current location</a></li>`;
+  messages.innerHTML += html;
+  // Above line replaces this by using templates
+  // messages.innerHTML += `<li>${message.from} ${formattedTime}:
+  // <a target="_blank" href="${message.url}">My current location</a></li>`;
 });
 
 let formInput = document.querySelector("#message");
