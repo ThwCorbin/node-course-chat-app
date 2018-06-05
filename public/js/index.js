@@ -2,6 +2,27 @@ const socket = io();
 
 // Regular functions instead of arrows for
 // compatibility issues with browsers/phones
+
+let newMessageHeight = 0;
+function scrollToBottom() {
+  let messages = document.getElementById("messages");
+  let newMessage = messages.lastElementChild;
+  let { clientHeight } = messages;
+  let { scrollTop } = messages;
+  let { scrollHeight } = messages;
+  let previousMessageHeight = newMessageHeight;
+  newMessageHeight = parseInt(
+    window.getComputedStyle(newMessage).getPropertyValue("height")
+  );
+
+  if (
+    clientHeight + scrollTop + newMessageHeight + previousMessageHeight >=
+    scrollHeight
+  ) {
+    messages.scrollTo(0, scrollHeight);
+  }
+}
+
 socket.on("connect", function() {
   console.log("Connected to server");
 });
@@ -22,6 +43,7 @@ socket.on("newMessage", function(message) {
   messages.innerHTML += html;
   // Above line replaces this by using templates
   // messages.innerHTML += `<li>${message.from} ${formattedTime}: ${message.text}</li>`;
+  scrollToBottom();
 });
 
 socket.on("newLocationMessage", function(message) {
@@ -38,6 +60,7 @@ socket.on("newLocationMessage", function(message) {
   // Above line replaces this by using templates
   // messages.innerHTML += `<li>${message.from} ${formattedTime}:
   // <a target="_blank" href="${message.url}">My current location</a></li>`;
+  scrollToBottom();
 });
 
 let formInput = document.querySelector("#message");
