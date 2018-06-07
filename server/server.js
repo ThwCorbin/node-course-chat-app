@@ -6,6 +6,7 @@ const http = require("http");
 const express = require("express");
 const socketIO = require("socket.io");
 
+// Local requirements
 const {
   generateMessage,
   generateLocationMessage
