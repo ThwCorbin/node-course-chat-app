@@ -114,7 +114,6 @@ function sendMessage(e) {
   socket.emit(
     "createMessage",
     {
-      from: "User",
       text: messageText
     },
     function() {
