@@ -3,11 +3,8 @@ const socket = io();
 // Regular functions instead of arrows for
 // compatibility issues with browsers/phones
 
-// Pass in search string --> window.location.search
-// Return object with name and room properties and correct values
-// Remove characters ? + & =
-
 let newMessageHeight = 0;
+
 function scrollToBottom() {
   let messages = document.getElementById("messages");
   let newMessage = messages.lastElementChild;
@@ -18,13 +15,25 @@ function scrollToBottom() {
   newMessageHeight = parseInt(
     window.getComputedStyle(newMessage).getPropertyValue("height")
   );
-
   if (
     clientHeight + scrollTop + newMessageHeight + previousMessageHeight >=
     scrollHeight
   ) {
     messages.scrollTo(0, scrollHeight);
   }
+}
+
+function parseString(searchString) {
+  let queryObject = {};
+  searchString.replace(new RegExp("([^?=&]+)(=([^&#]*))?", "g"), function(
+    $0,
+    $1,
+    $2,
+    $3
+  ) {
+    queryObject[$1] = decodeURIComponent($3.replace(/\+/g, "%20"));
+  });
+  return queryObject;
 }
 
 // "([^?=&]+)(=([^&#]*))?", "g"),
@@ -35,16 +44,6 @@ function scrollToBottom() {
 // x* Matches the preceding item x 0 or more times.
 // (x)(y)? Question mark makes the preceding token optional. Called a quantifier.
 // g Global match flag; finds all matches (does not stop after first match)
-
-function parseString(searchString) {
-  let queryObject = {};
-  searchString.replace(new RegExp("([^?=&]+)(=([^&#]*))?", "g"), 
-  function($0, $1, $2, $3) {
-    queryObject[$1] = decodeURIComponent($3.replace(/\+/g, "%20"));
-  });
-  console.log(queryObject);
-  return queryObject;
-}
 
 socket.on("connect", function() {
   let params = parseString(window.location.search);
@@ -61,6 +60,16 @@ socket.on("connect", function() {
 
 socket.on("disconnect", function() {
   console.log("Disconnected from server");
+});
+
+socket.on("updateUserList", function(users) {
+  let people = document.querySelector("#usersOl");
+  // clear the users listed in People sidebar
+  people.innerHTML = "";
+
+  users.forEach(function(user) {
+    people.innerHTML += `<li>${user}</li>`;
+  });
 });
 
 socket.on("newMessage", function(message) {
